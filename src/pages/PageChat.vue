@@ -1,41 +1,43 @@
 <template>
     <q-page class="flex column">
-        <div class="q-pa-nd column col justify-end">
+        <q-banner class="bg-grey-4 text center">
+            User is offline
+        </q-banner>
+        <div class="q-pa-md column col justify-end">
             <q-chat-message
-                name="me"
-                :text="['hey, how are you?']"
-                sent
-            />
-            <q-chat-message
-                name="Jane"
-                :text="['doing fine, how r you?']"
+                v-for="message in messages"
+                :key="message.text"
+                :name="message.from"
+                :text="[message.text]"
+                :sent="message.from == 'me' ? true : false"
             />
         </div>
         <q-footer elevated>
             <q-toolbar>
-                <q-input
-                    rounded
-                    bg-color="white"
-                    v-model="text"
-                    label="newMessage"
-                    maxlength="12"
-                    :dense="dense">
-        <template v-slot:before>
-        </template>
-
-        <template v-slot:append>
-        <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
-        <q-icon name="schedule" />
-        </template>
-        <template v-slot:after>
-            <q-btn
-                round
-                dense
-                flat
-                icon="send"
-            />
-        </template>
-    </q-input>
+                <q-form 
+                    @submit="sendMessage"
+                    class="full-width"
+                >
+                    <q-input
+                        v-model="newMessage"
+                        bg-color="white"
+                        outlined
+                        rounded
+                        label="Message"
+                        dense
+                    >
+                    <template v-slot:after>
+                        <q-btn
+                            round
+                            dense
+                            flat
+                            @click="sendMessage"
+                            color="white"
+                            icon="send"
+                        />
+                    </template>
+                    </q-input>
+                </q-form>
             </q-toolbar>
         </q-footer>
     </q-page>
@@ -43,17 +45,34 @@
 
 <script>
 
-export default({
+export default {
     data() {
         return {
             newMessage: '',
             messages: [
                 {
-                    text: '',
+                    text: 'Hey Jim,how are you?',
+                    from: 'me'
+                },
+                {
+                    text: 'Good, thanks, Danny! How are you?',
+                    from: 'them'
+                },
+                {
+                    text: 'Pretty good',
                     from: 'me'
                 }
             ]
         }
+    },
+
+    methods: {
+        sendMessage() {
+            this.messages.push({
+                text: this.newMessage,
+                from: 'me'
+            })
+        }
     }
-})
+}
 </script>
