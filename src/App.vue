@@ -3,9 +3,13 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'App'
-})
+  import { mapActions } from "vuex"
+  export default{
+    methods: {
+      ...mapActions('actions', ['handleAuthStateChanged'])
+    },
+    mounted(){
+      this.handleAuthStateChanged()
+    }
+  }
 </script>

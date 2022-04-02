@@ -3,6 +3,9 @@ import { createStore } from 'vuex'
 
 // import example from './module-example'
 import actions from './module-chat'
+import state from './module-chat'
+import getters from './module-chat'
+import mutations from './module-chat'
 
 
 /*
@@ -18,7 +21,10 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
       // example
-      actions
+      actions,
+      state,
+      getters,
+      mutations
     },
 
     // enable strict mode (adds overhead!)

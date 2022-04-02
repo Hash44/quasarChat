@@ -1,5 +1,11 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { getDatabase, ref, set } from "firebase/database";
+import { getAuth,
+        createUserWithEmailAndPassword, 
+        signInWithEmailAndPassword,
+        onAuthStateChanged 
+    } from 'firebase/auth'
+import {getDatabase, ref, set, get, child } from "firebase/database";
+// import { setUserDetails } from './mutations';
+
 
 
 function registerUser ({}, payload) {
@@ -37,4 +43,33 @@ function loginUser({}, payload) {
     })
 }
 
-export {registerUser, loginUser}
+function handleAuthStateChanged({ commit }) {
+    console.log('handleAuthStateChanged')
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) { 
+            let userId = getAuth().currentUser.uid
+            const dbRef = ref(getDatabase());
+            get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    let userInfo = snapshot.val();
+                    console.log('snapshot is : ', userInfo);
+                    commit('setUserDetails', {
+                        name: userInfo.name,
+                        email: userInfo.email,
+                        userId: userId
+
+                    })
+                } else {
+                    console.log("No data available");
+                }
+                }).catch((error) => {
+                console.error(error);
+                });
+        } else {
+
+        }
+    });
+}
+
+export {registerUser, loginUser, handleAuthStateChanged}
