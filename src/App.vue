@@ -6,7 +6,7 @@
   import { mapActions } from "vuex"
   export default{
     methods: {
-      ...mapActions('actions', ['handleAuthStateChanged'])
+      ...mapActions('chatStore', ['handleAuthStateChanged'])
     },
     mounted(){
       this.handleAuthStateChanged()

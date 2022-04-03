@@ -42,7 +42,7 @@
             }
         },
         methods: {
-            ...mapActions('actions', ['registerUser', 'loginUser']),
+            ...mapActions('chatStore', ['registerUser', 'loginUser']),
             submitForm(){
                 if (this.tab == 'login') {
                     this.loginUser(this.formData)

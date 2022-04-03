@@ -16,6 +16,7 @@
           {{ title }}
         </q-toolbar-title>
         <q-btn
+          v-if="!userDetails.userId"
           to="/auth"
           class="absolute-right  q-pr-md"
           icon="account_circle"
@@ -25,6 +26,17 @@
           label="Login"
         
         />
+          <q-btn
+          vv-else
+          to="/auth"
+          class="absolute-right  q-pr-md"
+          icon="account_circle"
+          no-caps
+          flat
+          dense>
+          Logout<br>
+          {{ userDetails.name }}
+          </q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -34,11 +46,13 @@
 </template>
 
 <script>
-import { defineComponent} from 'vue'
 
-export default defineComponent({
+import { mapActions, mapState } from "vuex"
+
+export default{
   name: 'MainLayout',
   computed: {
+    ...mapState('chatStore', ['userDetails']),
     title() {
       console.log(this.$route)
       let currentPath = this.$route.fullPath
@@ -55,5 +69,5 @@ export default defineComponent({
 
 
 
-})
+}
 </script>

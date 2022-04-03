@@ -2,10 +2,10 @@ import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
 // import example from './module-example'
-import actions from './module-chat'
-import state from './module-chat'
-import getters from './module-chat'
-import mutations from './module-chat'
+import chatStore from './module-chat/chatStore'
+// import index from './module-chat/index'
+
+
 
 
 /*
@@ -21,10 +21,8 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
       // example
-      actions,
-      state,
-      getters,
-      mutations
+      chatStore,
+      // index
     },
 
     // enable strict mode (adds overhead!)
