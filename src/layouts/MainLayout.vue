@@ -27,8 +27,8 @@
         
         />
           <q-btn
-          vv-else
-          to="/auth"
+          v-if="userDetails.userId"
+          @click="logoutUser"
           class="absolute-right  q-pr-md"
           icon="account_circle"
           no-caps
@@ -47,6 +47,7 @@
 
 <script>
 
+import { map } from "@firebase/util"
 import { mapActions, mapState } from "vuex"
 
 export default{
@@ -59,15 +60,25 @@ export default{
       if (currentPath == '/') return ('Welcome to the chat')
       else if (currentPath == '/chat') return ('Chat')
       else if (currentPath == '/auth') return ('Login')
-
-    }
+    },
+    // uname() {
+    //   this.$forceUpdate();
+    //   return this.userDetails.name
+      
+    // }
   },
-
-  
-
-
-
-
+  methods: {
+    ...mapActions('chatStore', ['logoutUser'])
+  }
 
 }
 </script>
+
+
+<style lang="stylus">
+
+  .q-toolbar
+    .q-btn
+      line-height: 1.2
+
+</style>

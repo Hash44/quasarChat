@@ -36,8 +36,8 @@
             return {
                 formData: {
                     name: '',
-                    email: '',
-                    password: ''
+                    email: 'jone@gmail.com',
+                    password: 'pass123'
                 }
             }
         },

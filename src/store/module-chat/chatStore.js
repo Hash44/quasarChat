@@ -1,7 +1,8 @@
 import { getAuth,
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword,
-    onAuthStateChanged 
+    onAuthStateChanged,
+    signOut
 } from 'firebase/auth'
 import {getDatabase, ref, set, get, child } from "firebase/database";
 
@@ -74,9 +75,12 @@ const actions = {
                             userId: userId
     
                         })
+                        this.$router.push('/')
                     } else {
-                        console.log("No data available");
+                        // console.log("No data available");
                         commit('setUserDetails', {})
+                        // this.$router.replace('/auth')
+                        
                     }
                     }).catch((error) => {
                     console.error(error);
@@ -84,6 +88,17 @@ const actions = {
             } else {
     
             }
+        });
+    },
+    logoutUser() {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+            
+            this.$router.push('/auth')
+            window.location.reload();
+
+        }).catch((error) => {
+            // An error happened.
         });
     }
     
