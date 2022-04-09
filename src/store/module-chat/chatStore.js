@@ -1,3 +1,4 @@
+
 import { getAuth,
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword,
@@ -10,19 +11,35 @@ import 'firebase/database'
 
 
 const state = {
-    userDetails: {}
+    userDetails: {},
+    users: {}
 }
 
 
 const mutations = {
     setUserDetails (state, payload) {
         state.userDetails = payload
-        }
+        },
+    addUser(state, payload) {
+        console.log('payload from add user : ', payload)
+        state.users[payload.userKey] = payload.userDetails
+    },
+    updateUser(state, payload) {
+        Object.assign(state.users[payload.userKey], payload.userDetails)
+    }
 
 }
 
 const getters = {
-
+    users: state => {
+        let usersFiltered = {}
+        Object.keys(state.users).forEach(key => {
+            if(key !== state.userDetails.userId){
+                usersFiltered[key] = state.users[key]
+            }  
+        })
+        return usersFiltered
+    }
 }
 
 
@@ -79,6 +96,7 @@ const actions = {
                         userId: userId,
                         online: true
                     })
+                    dispatch('firebaseGetUsers')
                     this.$router.push('/')
                 }, {
                     onlyOnce: true
@@ -89,8 +107,9 @@ const actions = {
                     userId: state.userDetails.userId,
                     online: false
                 })
-                commit('setUserDetails', {})
                 this.$router.replace('/auth')
+                commit('setUserDetails', {})
+                
             }
         });
     },
@@ -100,11 +119,39 @@ const actions = {
         // const userKey = push(child(ref(db), 'users')).key;
         const updates = {};
 
-        updates ['/users/' + payload.userId + '/online'] = payload.online
+        updates['/users/' + payload.userId + '/online'] = payload.online
         update(ref(db),updates)
         // let userId = getAuth().currentUser.uid
         // const db = getDatabase();
         // set(ref(db, 'users/' + payload.userId).update(payload.update));
+    },
+
+    firebaseGetUsers({ commit }) {
+        let userId = getAuth().currentUser.uid
+        const db = getDatabase();
+        const userRef = ref(db, '/users/' + userId);
+        onValue(userRef, (snapshot) => {
+            let userDetails = snapshot.val();
+            let userKey = snapshot.key
+            commit('addUser', {
+                userKey,
+                userDetails
+            })
+        // updateStarCount(postElement, data);
+        });
+
+        onValue(userRef, (snapshot) => {
+            let userDetails = snapshot.val();
+            let userKey = snapshot.key
+            commit('updateUser', {
+                userKey,
+                userDetails
+            })
+        // updateStarCount(postElement, data);
+        });
+
+
+
     },
 
     logoutUser() {
