@@ -1,5 +1,5 @@
 <template>
-    <form @submit="submitForm">
+    <form @submit.prevent="submitForm">
         <q-input
         v-if="tab == 'register'"
         v-model="formData.name"

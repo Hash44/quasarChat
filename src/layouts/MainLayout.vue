@@ -2,16 +2,14 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar class="bg-green-8">
-        <q-btn
-          v-show="$route.fullPath.includes('/chat')"
-          to="/"
-          icon="arrow_back"
-          flat
-          dense
-          label="Back"
-        
-        />
-
+          <q-btn
+            v-if="$route.fullPath.includes('/chat')" 
+            to="/"
+            icon="arrow_back"
+            flat
+            dense
+            label="Back"         
+          />
         <q-toolbar-title class="absolute-center">
           {{ title }}
         </q-toolbar-title>
@@ -24,15 +22,17 @@
           flat
           dense
           label="Login"
+          type="button"
         
         />
           <q-btn
-          v-if="userDetails.userId"
-          @click="logoutUser"
+          v-else
+          @click.prevent="logoutUser"
           class="absolute-right  q-pr-md"
           icon="account_circle"
           no-caps
           flat
+          type="button"
           dense>
           Logout<br>
           {{ userDetails.name }}
@@ -47,7 +47,6 @@
 
 <script>
 
-import { map } from "@firebase/util"
 import { mapActions, mapState } from "vuex"
 
 export default{
@@ -61,11 +60,6 @@ export default{
       else if (currentPath == '/chat') return ('Chat')
       else if (currentPath == '/auth') return ('Login')
     },
-    // uname() {
-    //   this.$forceUpdate();
-    //   return this.userDetails.name
-      
-    // }
   },
   methods: {
     ...mapActions('chatStore', ['logoutUser'])

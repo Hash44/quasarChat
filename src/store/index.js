@@ -2,7 +2,7 @@ import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
 // import example from './module-example'
-import chatStore from './module-chat/chatStore'
+import chatStore from './module-chat/chatStore.js'
 // import index from './module-chat/index'
 
 

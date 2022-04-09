@@ -15,4 +15,5 @@ const firebaseConfig = {
 };
 
 initializeApp(firebaseConfig)
-// let firebaseAuth = firebase.auth()
+
+
