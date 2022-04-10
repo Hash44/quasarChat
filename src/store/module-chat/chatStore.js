@@ -5,7 +5,7 @@ import { getAuth,
     onAuthStateChanged,
     signOut
 } from 'firebase/auth'
-import {getDatabase, ref, set, get, child, onValue, update, push } from "firebase/database";
+import {getDatabase, ref, set, get, child, onValue, update, push, onChildAdded, onChildChanged } from "firebase/database";
 import 'firebase/auth'
 import 'firebase/database'
 
@@ -36,8 +36,9 @@ const getters = {
         Object.keys(state.users).forEach(key => {
             if(key !== state.userDetails.userId){
                 usersFiltered[key] = state.users[key]
-            }  
+            }
         })
+        console.log('filtered users from getters: ', usersFiltered )
         return usersFiltered
     }
 }
@@ -84,7 +85,6 @@ const actions = {
                     // console.log('snapshot: ', snapshot.val()) username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
                     // ...
                     let userDetails = snapshot.val()
-                    console.log('user snapshot: ', userDetails)
 
 
                     commit('setUserDetails', {
@@ -127,28 +127,69 @@ const actions = {
     },
 
     firebaseGetUsers({ commit }) {
-        let userId = getAuth().currentUser.uid
         const db = getDatabase();
-        const userRef = ref(db, '/users/' + userId);
-        onValue(userRef, (snapshot) => {
-            let userDetails = snapshot.val();
-            let userKey = snapshot.key
-            commit('addUser', {
-                userKey,
-                userDetails
-            })
-        // updateStarCount(postElement, data);
+        const usersRef = ref(db, 'users');
+        onChildAdded(usersRef, (data) => {
+        let userDetails = data.val()
+        let userKey = data.key
+        commit('addUser', {
+            userKey,
+            userDetails
+        })
         });
 
-        onValue(userRef, (snapshot) => {
-            let userDetails = snapshot.val();
-            let userKey = snapshot.key
+        onChildChanged(usersRef, (data) => {
+            let userDetails = data.val()
+            let userKey = data.key
             commit('updateUser', {
                 userKey,
                 userDetails
             })
-        // updateStarCount(postElement, data);
-        });
+            });
+        
+        
+        
+        // const dbRef = ref(getDatabase());
+        // get(child(dbRef, 'users/')).then((snapshot) => {
+        //     if (snapshot.exists()) {
+        //         console.log('raw snapshot ', snapshot);
+        //         let userDetails = snapshot.val();
+        //         let userKey = snapshot.key
+        //         console.log('userDetails', userDetails)
+        //         console.log('userKey: ', userKey)
+        //     } else {
+        //         console.log("No data available");
+        //     }
+        //     }).catch((error) => {
+        //     console.error(error);
+        //     });
+        // let userId = getAuth().currentUser.uid
+        // const db = getDatabase();
+        // const userRef = ref(db, 'users/');
+        // onValue(userRef, (snapshot) => {
+        //     console.log('snapshot raw: ', snapshot)
+        //     let userDetails = snapshot.val();
+        //     // let userKey = Object.keys(userDetails)
+        //     let userKey = Object.keys(snapshot.val())[1];
+        //     console.log('userDetails from get users: ', userDetails)
+        //     console.log('userKey from get users: ', userKey)
+        //     commit('addUser', {
+        //         userKey,
+        //         userDetails
+        //     })
+        // // updateStarCount(postElement, data);
+        // });
+
+        // onValue(userRef, (snapshot) => {
+        //     let userDetails = snapshot.val();
+        //     let userKey = snapshot.key
+        //     commit('updateUser', {
+        //         userKey,
+        //         userDetails
+        //     })
+        //     window.localStorage
+        // // updateStarCount(postElement, data);
+        // });
 
 
 
