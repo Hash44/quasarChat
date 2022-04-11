@@ -1,13 +1,15 @@
 <template>
     <q-page class="flex column">
-        <q-banner class="bg-grey-4 text center">
-            User is offline
+        <q-banner
+        v-if="!otherUserDetails.online"
+        class="bg-grey-4 text-center">
+            {{ otherUserDetails.name }} User is offline
         </q-banner>
         <div class="q-pa-md column col justify-end">
             <q-chat-message
                 v-for="message in messages"
                 :key="message.text"
-                :name="message.from"
+                :name="message.from == 'me' ? userDetails.name : otherUserDetails.name"
                 :text="[message.text]"
                 :sent="message.from == 'me' ? true : false"
             />
@@ -44,35 +46,37 @@
 </template>
 
 <script>
-
+import { mapState, mapActions } from "vuex"
+import mixinOtherUserDetails from 'src/mixins/mixinOtherUserDetails.js'
 export default {
+    mixins: [mixinOtherUserDetails],
     data() {
         return {
             newMessage: '',
-            messages: [
-                {
-                    text: 'Hey Jim,how are you?',
-                    from: 'me'
-                },
-                {
-                    text: 'Good, thanks, Danny! How are you?',
-                    from: 'them'
-                },
-                {
-                    text: 'Pretty good',
-                    from: 'me'
-                }
-            ]
         }
     },
 
+    computed: {
+        ...mapState('chatStore', ['messages', 'userDetails']),
+    },
+
     methods: {
+        ...mapActions('chatStore', ['firebaseGetMessages', 'firebaseStopGettingMessages', 'firebaseSendMessage']),
         sendMessage() {
-            this.messages.push({
-                text: this.newMessage,
-                from: 'me'
+            this.firebaseSendMessage({
+                message: {
+                    text: this.newMessage,
+                    from: 'me'
+                },
+                otherUserId: this.$route.params.otherUserId
             })
         }
+    },
+    mounted() {
+        this.firebaseGetMessages(this.$route.params.otherUserId)
+    },
+    unmounted() {
+        this.firebaseStopGettingMessages()
     }
 }
 </script>

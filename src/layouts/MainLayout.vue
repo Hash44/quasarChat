@@ -48,16 +48,16 @@
 <script>
 
 import { mapActions, mapState } from "vuex"
+import mixinOtherUserDetails from 'src/mixins/mixinOtherUserDetails.js'
 
 export default{
-  name: 'MainLayout',
+  mixins: [mixinOtherUserDetails],
   computed: {
     ...mapState('chatStore', ['userDetails']),
     title() {
-      console.log(this.$route)
       let currentPath = this.$route.fullPath
       if (currentPath == '/') return ('Welcome to the chat')
-      else if (currentPath == '/chat') return ('Chat')
+      else if (currentPath.includes('/chat')) return this.otherUserDetails.name
       else if (currentPath == '/auth') return ('Login')
     },
   },
