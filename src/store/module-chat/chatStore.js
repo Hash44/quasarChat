@@ -203,7 +203,6 @@ const actions = {
         }
     },
     firebaseSendMessage({}, payload) {
-        console.log('payload: ', payload)
         const db = getDatabase();
         const chatRef = ref(db, 'chats/' + state.userDetails.userId + '/' + payload.otherUserId)
         const newChat = push(chatRef)
